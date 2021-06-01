@@ -5,22 +5,26 @@
   >
     <request-account />
     <div class="login">
-      <img src="@/assets/logo.svg" v-show="isDarkMode" />
-      <img src="@/assets/logo.png" v-show="!isDarkMode" />
+      <img src="@/assets/DCHQ-dark.svg" v-show="isDarkMode" />
+      <img src="@/assets/DCHQ.svg" v-show="!isDarkMode" />
       <h4 :class="{ 'light-text': isDarkMode, 'dark-text': !isDarkMode }">
         Sign Into Design+Code
       </h4>
-      <input
-        :class="{ 'light-field': isDarkMode, 'dark-field': !isDarkMode }"
-        type="email"
-        placeholder="Email"
-      />
-      <input
-        :class="{ 'light-field': isDarkMode, 'dark-field': !isDarkMode }"
-        type="password"
-        placeholder="Password"
-      />
-      <button>Sign In</button>
+      <form @submit.prevent="onSubmit">
+        <input
+          :class="{ 'light-field': isDarkMode, 'dark-field': !isDarkMode }"
+          type="email"
+          placeholder="Email"
+          v-model="email"
+        />
+        <input
+          :class="{ 'light-field': isDarkMode, 'dark-field': !isDarkMode }"
+          type="password"
+          placeholder="Password"
+          v-model="password"
+        />
+        <button>Sign In</button>
+      </form>
       <router-link
         :class="{ 'light-link': isDarkMode, 'dark-link': !isDarkMode }"
         to="/recover"
@@ -34,16 +38,42 @@
 <script>
 import RequestAccount from "@/components/RequestAccount.vue";
 import ThemeSwitch from "@/components/ThemeSwitch.vue";
+// import * as netlifyIdentityWidget from "netlify-identity-widget";
+import { auth } from "@/main";
+
 export default {
   name: "SignIn",
+  data() {
+    return {
+      email: null,
+      password: null,
+    };
+  },
   computed: {
     isDarkMode() {
       return this.$store.getters.isDarkMode;
     },
   },
+  // mounted() {
+  //   netlifyIdentityWidget.open();
+  // },
   components: {
     RequestAccount,
     ThemeSwitch,
+  },
+  methods: {
+    onSubmit() {
+      const email = this.email;
+      const password = this.password;
+      auth
+        .login(email, password, true)
+        .then(() => {
+          this.$router.replace("/");
+        })
+        .catch((error) => {
+          alert("Error:" + error);
+        });
+    },
   },
 };
 </script>
@@ -59,7 +89,8 @@ export default {
   width: 400px;
   img {
     height: 100px;
-    width: 100px;
+    width: 100%;
+    margin: 0 auto;
   }
 }
 h4 {
