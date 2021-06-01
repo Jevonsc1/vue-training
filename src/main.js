@@ -8,7 +8,7 @@ import GoTrue from "gotrue-js";
 // netlifyIdentityWidget.init();
 
 export const auth = new GoTrue({
-  APIUrl: "https://jevons-vue.netlify.app",
+  APIUrl: "https://jevons-vue.netlify.app/.netlify/identity",
   setCookie: true,
 });
 
