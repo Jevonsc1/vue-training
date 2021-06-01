@@ -2,7 +2,7 @@
   <div>
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/about">About</router-link> |
       <a @click="onClick">Logout</a>
     </div>
   </div>

@@ -3,7 +3,8 @@
     class="container"
     :class="{ 'light-background': !isDarkMode, 'dark-background': isDarkMode }"
   >
-    <request-account />
+    <Notification v-if="hasText" :text="text" />
+    <RequestAccount />
     <div class="login">
       <img src="@/assets/DCHQ-dark.svg" v-show="isDarkMode" />
       <img src="@/assets/DCHQ.svg" v-show="!isDarkMode" />
@@ -30,7 +31,7 @@
         to="/recover"
         >Forgot your password?</router-link
       >
-      <theme-switch />
+      <ThemeSwitch />
     </div>
   </div>
 </template>
@@ -38,8 +39,8 @@
 <script>
 import RequestAccount from "@/components/RequestAccount.vue";
 import ThemeSwitch from "@/components/ThemeSwitch.vue";
-// import * as netlifyIdentityWidget from "netlify-identity-widget";
 import { auth } from "@/main";
+import Notification from "@/components/Notification.vue";
 
 export default {
   name: "SignIn",
@@ -47,6 +48,8 @@ export default {
     return {
       email: null,
       password: null,
+      hasText: false,
+      text: "",
     };
   },
   computed: {
@@ -54,24 +57,32 @@ export default {
       return this.$store.getters.isDarkMode;
     },
   },
-  // mounted() {
-  //   netlifyIdentityWidget.open();
-  // },
+  mounted() {
+    const params = this.$route.params;
+
+    if (params.userLoggedOut) {
+      this.hasText = true;
+      this.text = "You have logged out!";
+    }
+  },
   components: {
     RequestAccount,
     ThemeSwitch,
+    Notification,
   },
   methods: {
     onSubmit() {
       const email = this.email;
       const password = this.password;
+
       auth
         .login(email, password, true)
-        .then(() => {
+        .then((response) => {
+          console.log(response);
           this.$router.replace("/");
         })
         .catch((error) => {
-          alert("Error:" + error);
+          alert("Error: " + error);
         });
     },
   },
