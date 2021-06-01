@@ -47,10 +47,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const currentUser = netlifyIdentityWidget.currentUser();
-  const requriesAuth = to.matched.some((record) => {
+  const requiresAuth = to.matched.some((record) => {
     return record.meta.requiresAuth;
   });
-  if (requriesAuth && !currentUser) {
+  if (requiresAuth && !currentUser) {
     next("signin");
   } else {
     next();
